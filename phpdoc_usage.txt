@@ -1,0 +1,34 @@
+****************
+Using PEAR
+****************
+
+$ pear channel-discover pear.phpdoc.org
+$ pear install phpdoc/phpDocumentor
+
+****************
+
+****************
+Check phpdoc installation locally
+****************
+
+$ cd /c/xampp/php/
+$ phpdoc
+Collecting files .. OK
+Initializing parser .. OK
+Parsing files
+
+
+
+  [Exception]
+  No parsable files were found, did you specify any using the -f or -d parameter?
+
+
+
+project:run [-t|--target[="..."]] [-f|--filename[="..."]] [-d|--directory[="..."]] [--encoding[="..."]] [-e|--extensions[="..."]] [-i|--ignore[="..."]] [--ignore-tags[
+="..."]] [--hidden] [--ignore-symlinks] [-m|--markers[="..."]] [--title[="..."]] [--force] [--validate] [--visibility[="..."]] [--defaultpackagename[="..."]] [--source
+code] [-p|--progressbar] [--template[="..."]] [--parseprivate] [--log[="..."]]
+
+$ phpdoc -d /c/xampp/htdocs/moodle/moodlecore265/mod/scheduler -t /c/xampp/htdocs/phpdoc/moodle_v266_scheduler/
+/c/xampp/htdocs/moodle/moodlecore265/mod/scheduler => is a source directory
+/c/xampp/htdocs/phpdoc/moodle_v266_scheduler/ => is a target directory
+
