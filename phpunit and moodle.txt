@@ -1,0 +1,45 @@
+# Install PHPUnit in xampp
+
+# Install PHPUnit via composer
+## Install Composer dependency manager
+
+$ cd /moodle_dirpath/moodle
+$ curl -s https://getcomposer.org/installer | php
+
+## Execute Composer installer
+
+$ cd /moodle_dirpath/moodle
+$ php composer.phar install --dev
+
+## Initialisation of test environment
+
+// edit config.php with values as below
+$CFG->phpunit_prefix = 'phpu_';
+$CFG->phpunit_dataroot = '/home/example/phpu_moodledata';
+
+$ cd /moodle_dirpath/moodle
+// This command has to be repeated after any upgrade, plugin (un)installation or if you have added tests to a plugin you are developing
+$ php admin/tool/phpunit/cli/init.php
+
+// above command installs /vendor/, composer.phar, composer.lock under root moodle directory
+
+// Run phpunit tests 
+$ cd /moodle_dirpath/moodle
+
+// outputs results within terminal
+$ vendor/bin/phpunit
+
+or 
+
+// outputs results in separate file
+$ vendor/bin/phpunit > phpunit_output.txt
+
+## Running a single test quickly
+
+// outputs results within terminal
+$ vendor/bin/phpunit core_minify_testcase /moodle_dirpath/lib/tests/minify_test.php 
+
+or
+
+// outputs results in separate file 
+$ vendor/bin/phpunit core_minify_testcase /moodle_dirpath/lib/tests/minify_test.php > phpunit_output.txt
