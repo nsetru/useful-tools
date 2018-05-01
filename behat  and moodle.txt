@@ -1,0 +1,120 @@
+# Install Behat in wamp - 64bit and windows 7
+
+## Current platforms ##
+1) wamp64, Windows 7 
+
+Pre-requisites
+- Selenium
+- Moodle version3.4
+- Google Chrome browser 
+- Wamp64
+- Windows 7
+
+# Configure wamp to run behat tests.
+ 
+- A Moodle instance running on a webserver which you can connect to, just like you use for development and manual testing. One requirement we put on behat is that this runs on a different wwwroot to your 'normal' moodle install. So you will need to configure apache to listen on two urls for the same moodle checkout if you want to run tests manually
+- Add new virtual host entry using wamp tool
+Eg :: http://moodlebehat.local:8080
+Point it to same wwwroot as the moodle version you need to test 
+
+# Add new data folder for behat tests under moodle's dataroot directory
+
+C:\wamp64\www\moodledata\bht_moodledata_mip
+
+# Edit Moodle's config.php
+
+// Behat test site needs a unique www root, data directory and database prefix:
+
+$CFG->behat_wwwroot = 'http://moodlebehat.local:8080';
+$CFG->behat_prefix = 'bht_';
+$CFG->behat_dataroot = 'C:\\wamp64\\www\\moodledata_mip\\bht_moodledata_mip';
+
+# Download and install Selenium standalone server
+
+- Link to download - https://www.seleniumhq.org/download/ - Its a single jar file
+- Install it under C:/Selenium/
+- Run the Selenium jar file 
+$ java -jar selenium-server-standalone-3.11.0.jar 
+22:08:26.702 INFO [GridLauncherV3.launch] - Selenium build info: version: '3.11.0', revision: 'e59cfb3'
+22:08:26.704 INFO [GridLauncherV3$1.launch] - Launching a standalone Selenium Server on port 4444
+2018-04-17 22:08:26.952:INFO::main: Logging initialized @1278ms to org.seleniumhq.jetty9.util.log.StdErrLog
+22:08:27.584 INFO [SeleniumServer.boot] - Welcome to Selenium for Workgroups....
+22:08:27.584 INFO [SeleniumServer.boot] - Selenium Server is up and running on port 4444
+
+
+# Download and install Chrome driver plugin 
+
+Note :: If we want to run selenium using chrome. Firefox won't work with selenium
+
+- Download googlechrome driver from https://chromedriver.storage.googleapis.com/index.html?path=2.37/
+- Install it under C:/Selenium
+
+- Run Selenium with google chromedriver
+$ java -jar -Dwebdriver.chrome.driver=C:\\Selenium\\chromedriver.exe selenium-server-standalone-3.11.0.jar
+09:44:25.336 INFO [GridLauncherV3.launch] - Selenium build info: version: '3.11.0', revision: 'e59cfb3'
+09:44:25.338 INFO [GridLauncherV3$1.launch] - Launching a standalone Selenium Server on port 4444
+2018-04-18 09:44:25.561:INFO::main: Logging initialized @678ms to org.seleniumhq.jetty9.util.log.StdErrLog
+09:44:26.321 INFO [SeleniumServer.boot] - Welcome to Selenium for Workgroups....
+09:44:26.321 INFO [SeleniumServer.boot] - Selenium Server is up and running on port 4444
+
+
+# Prepare Moodle environmnet to run behat tests
+
+$ cd /c/wamp/www/moodle
+
+# Edit Moodle's config file
+
+$ vim config.php
+
+// Add following config in config.php
+
+// You can override default Moodle configuration for Behat and add your own
+// params; here you can add more profiles, use different Mink drivers than Selenium...
+// These params would be merged with the default Moodle behat.yml, giving priority
+// to the ones specified here. The array format is YAML, following the Behat
+// params hierarchy. More info: http://docs.behat.org/guides/7.config.html
+// Example:
+$CFG->behat_config = array(
+           'default' => array(
+                   'suites' => array (
+                           'default' => array(
+                                   'filters' => array(
+                                           'tags' => '~@_file_upload&&~@_javascript'
+                                   ),
+                           ),
+                   ),
+               'extensions' => array(
+                   'Behat\MinkExtension' => array(
+                       'selenium2' => array(
+                           'browser' => 'chrome',
+                           'capabilities' => array(
+                               'platform' => 'Windows 7'
+                           )
+                       )
+                   )
+               )
+           )
+       );
+	   
+// The command below initialises and prepares moodle environment to run behat tests
+$ php admin/tool/behat/cli/init.php
+
+// Run phpunit tests for 1 plugin - mod_forum
+$ vendor/bin/behat --config C:/wamp64/www/ucl/moodledata_mip/bht_moodledata_mip/behatrun/behat/behat.yml --tags "mod_forum"
+
+// The google chrome browser should open up and run all behat tests 
+
+
+2) Linux Red Hat
+
+
+
+## References ##
+
+https://docs.moodle.org/dev/Acceptance_testing/Browsers
+https://docs.moodle.org/dev/Running_acceptance_test
+https://gist.github.com/danpoltawski/8036489
+https://wiki.ucl.ac.uk/display/ISMoodle/Acceptance+testing+for+Moodle+using+behat
+
+
+

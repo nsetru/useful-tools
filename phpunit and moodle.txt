@@ -20,11 +20,19 @@ $ php composer.phar install
 
 ## Initialisation of test environment
 
-// edit config.php with values as below
+// Create  new data directory under moodle's dataroot directory
+$ cd /moodle_dataroot/
+$ mkdir phpu_moodle_v34
+
+// Change the permissions on phpunit data directory
+$ chmod -R 02777 phpu_moodle_v34
+
+// Edit config.php with values as below
 $CFG->phpunit_prefix = 'phpu_';
 $CFG->phpunit_dataroot = '/home/example/phpu_moodledata';
 
 $ cd /moodle_dirpath/moodle
+
 // This command has to be repeated after any upgrade, plugin (un)installation or if you have added tests to a plugin you are developing
 $ php admin/tool/phpunit/cli/init.php
 
