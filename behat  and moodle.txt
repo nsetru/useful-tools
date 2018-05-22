@@ -99,11 +99,16 @@ $CFG->behat_config = array(
 // The command below initialises and prepares moodle environment to run behat tests
 $ php admin/tool/behat/cli/init.php
 
-// Run phpunit tests for 1 plugin - mod_forum
+// Run behat tests for entire repository
+$ vendor/bin/behat --config C:/wamp64/www/ucl/moodledata_mip/bht_moodledata_mip/behatrun/behat/behat.yml
+
+// Run behat tests for 1 plugin - mod_forum
 $ vendor/bin/behat --config C:/wamp64/www/ucl/moodledata_mip/bht_moodledata_mip/behatrun/behat/behat.yml --tags "mod_forum"
 
 // The google chrome browser should open up and run all behat tests 
 
+// Run tests without javascript
+$ vendor/bin/behat --config C:/wamp64/www/ucl/moodledata_mip/bht_moodledata_mip/behatrun/behat/behat.yml --tags ~javascript
 
 2) Linux Red Hat
 

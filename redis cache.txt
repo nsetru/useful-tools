@@ -1,0 +1,119 @@
+## Reference ##
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-redis-server-as-a-session-handler-for-php-on-ubuntu-14-04
+
+Prerequisites
+- PHP Webserver running LAMP
+- Ubuntu server - this is where Redis will be installed
+
+
+##################################
+## For single servers ##
+##################################
+
+## Install Redis Step 1 — Install the Redis Server ##
+1) The first thing we need to do is get the Redis server up and running, on our redis Droplet.
+
+We will be using the regular Ubuntu package manager with a trusted PPA repository provided by Chris Lea. This is necessary to make sure we get the latest stable version of Redis.
+
+As a general piece of security advice, you should only use PPAs from trusted sources.
+
+First, add the PPA repository by running:
+
+$ sudo add-apt-repository ppa:chris-lea/redis-server
+
+Press ENTER to confirm.
+
+2) Now you need to update the package manager cache:
+
+$ sudo apt-get update
+
+3) And finally, let's install Redis by running:
+
+$ sudo apt-get install redis-server
+
+4) Redis should now be installed on your server. To test the installation, try this command:
+
+$ redis-cli ping
+This will connect to a Redis instance running on localhost on port 6379. You should get a PONG as response.
+
+## Check Redis version ##
+$ redis-server --version
+
+## Check if redis is installed as a service ##
+$ cd /etc/
+OR
+$ cd /etc/redis/
+
+$ find redis*
+
+That should give list of redis.conf services
+
+## Make a connection to Redis ##
+
+$ redis-cli -h 127.0.0.1
+
+Output
+127.0.0.1:6379>
+
+// This connects redis to localhost 127.0.0.1 on port 6379
+
+## check the data stored ##
+127.0.0.1:6379> keys *
+
+Output
+(empty list or set)
+// This should be empty if this is the first time you have configured redis on this server
+
+// Otherwise you should see a list similar to this
+Output
+127.0.0.1:6379> keys *
+ 1) "cs_92c18184d874d4bbcebbf87940d76b8b"
+ 2) "cs_3c60e20af217ecb7bfc5732b71099888"
+ 3) "us_7bb91b24cea7ff2944fd35cd1f218a9a"
+
+## delete redis data ##
+
+// Removes data from your connection's CURRENT database.
+$ redis-cli flushdb
+
+// Removes data from ALL databases.
+$ redis-cli flushall
+
+
+#########################################
+## How to set-up Redis on Moodle ##
+#########################################
+
+https://docs.moodle.org/34/en/Redis_cache_store
+
+## For single server ##
+
+## Configure application cache  
+
+1) Site admin > Plugins > Caching > Configuration > 
+2) 'Add instance' for Redis
+3) Add following values 
+Store name - Redis application cache
+Server - 127.0.0.1:6379
+Password - ""
+key_prefix - ucl_cs
+Use serializer - the default option
+
+## Configure session cache
+
+1) Uncomment follwing lines in moodle config.php
+
+$CFG->session_handler_class = '\core\session\redis';
+$CFG->session_redis_host = '127.0.0.1';
+$CFG->session_redis_port = 6379;  // Optional.
+$CFG->session_redis_database = 0;  // Optional, default is db 0.
+$CFG->session_redis_prefix = 'ucl_us'; // Optional, default is don't set one.
+$CFG->session_redis_acquire_lock_timeout = 120;
+$CFG->session_redis_lock_expire = 7200;
+
+
+##################################
+## For cluster of servers ##
+##################################
+
+
