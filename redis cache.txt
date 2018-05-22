@@ -1,5 +1,6 @@
 ## Reference ##
 https://www.digitalocean.com/community/tutorials/how-to-set-up-a-redis-server-as-a-session-handler-for-php-on-ubuntu-14-04
+https://chartio.com/resources/tutorials/how-to-delete-all-data-in-redis/
 
 Prerequisites
 - PHP Webserver running LAMP
@@ -48,33 +49,55 @@ $ find redis*
 
 That should give list of redis.conf services
 
+####################################
 ## Make a connection to Redis ##
+####################################
 
 $ redis-cli -h 127.0.0.1
 
 Output
 127.0.0.1:6379>
 
-// This connects redis to localhost 127.0.0.1 on port 6379
+## Connect to redis on port 6380 ##
 
-## check the data stored ##
+$ redis-cli -h 127.0.0.1 -p 6380
+
+Output
+127.0.0.1:6380>
+
+########################################
+## check the data stored on redis ##
+########################################
+
+
 127.0.0.1:6379> keys *
+
+// This should be empty if this is the first time you have configured redis on this server
 
 Output
 (empty list or set)
-// This should be empty if this is the first time you have configured redis on this server
 
 // Otherwise you should see a list similar to this
+
 Output
 127.0.0.1:6379> keys *
  1) "cs_92c18184d874d4bbcebbf87940d76b8b"
  2) "cs_3c60e20af217ecb7bfc5732b71099888"
  3) "us_7bb91b24cea7ff2944fd35cd1f218a9a"
 
-## delete redis data ##
+#################################### 
+## delete data stored in redis ##
+#####################################
 
-// Removes data from your connection's CURRENT database.
+// Removes data from your connection's CURRENT database on default port 6379
 $ redis-cli flushdb
+
+// Removes data from connection's CURRENT database specific to port
+
+$ redis-cli -h 127.0.0.1 -p 6380
+127.0.0.1:6380> keys *
+127.0.0.1:6380> flushdb
+
 
 // Removes data from ALL databases.
 $ redis-cli flushall
@@ -105,12 +128,15 @@ Use serializer - the default option
 
 $CFG->session_handler_class = '\core\session\redis';
 $CFG->session_redis_host = '127.0.0.1';
-$CFG->session_redis_port = 6379;  // Optional.
-$CFG->session_redis_database = 0;  // Optional, default is db 0.
+$CFG->session_redis_port = 6380;  // Optional.
 $CFG->session_redis_prefix = 'ucl_us'; // Optional, default is don't set one.
 $CFG->session_redis_acquire_lock_timeout = 120;
 $CFG->session_redis_lock_expire = 7200;
 
+Result :
+
+- All application cache is stored on redis port - 6379
+- All session cache is stored on redis port - 6380
 
 ##################################
 ## For cluster of servers ##
